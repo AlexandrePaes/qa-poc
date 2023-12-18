@@ -30,6 +30,7 @@ def faq_detail(request, faq_id):
 
 # V3
 
+
 @api_view(['GET', 'POST'])
 def faq_create(request):
     faq_page = FAQ.objects.all().order_by('id')
@@ -40,17 +41,17 @@ def faq_create(request):
     print('paginator Type:', type(paginator))
     print('paginator:', paginator)
 
-    page_number = request.GET.get('page', 1)
+    page_number = request.GET.get('page', faq_page.values)
     print('page_number Type:', type(page_number))
     print('page_number:', page_number)
 
-    page_number = int(page_number)
+    #page_number = int(page_number)
 
     page_obj = paginator.get_page(page_number)
     print('page_obj Type:', type(page_obj))
     print('page_obj:', page_obj)
 
-    next_page_number = paginator.get_page(page_number + 1)
+    next_page_number = paginator.get_page(page_number)
     print('next_page_number Type:', type(next_page_number))
     print('next_page_number:', next_page_number)    
 
@@ -65,9 +66,8 @@ def faq_create(request):
 
                 # Redirect to the next question or FAQ            
             if page_obj.has_next():
-                next_page_number = page_number
-                return redirect(f'{request.path_info}?page={next_page_number}')
-            return redirect(f'/faq_create/{next_page_number}')
+                return redirect(f'/faq/create/?page={page_obj.next_page_number}')
+            return redirect(f'/faq/create/?page={page_obj.next_page_number}')
     form = FAQForm({'question': page_number})
     return render(request, 'faq/faq_create.html', {'form': form, 'page_obj': page_obj})
 
