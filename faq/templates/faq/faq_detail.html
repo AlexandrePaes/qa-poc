@@ -1,0 +1,11 @@
+<!-- faq/templates/faq/faq_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>FAQ Detail</h2>
+
+  <h3>{{ faq.question }}</h3>
+  <p>{{ faq.answer }}</p>
+
+  <a href="{% url 'faq_list' %}">Back to FAQ List</a>
+{% endblock %}

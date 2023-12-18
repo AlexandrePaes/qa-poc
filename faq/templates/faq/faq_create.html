@@ -1,0 +1,44 @@
+<!-- faq/templates/faq/faq_create.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>Create FAQ</h2>
+
+  {% for faq in page_obj %}
+    <div>
+      <h3>{{ faq.question }}</h3>
+      <p>{{ faq.answer }}</p>
+    </div>
+  {% endfor %}
+
+  <form method="post" action="{% url 'faq_create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" id="submit-btn">Submit</button>
+  </form>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+
+  <input type="hidden" id="question-id-input" value="{{ form.initial.question_id }}">
+
+  <!-- <script src="{% static 'assets/js/script.js' %}"></script> -->
+
+  <a href="{% url 'faq_list' %}">Back to FAQ List</a>
+{% endblock %}

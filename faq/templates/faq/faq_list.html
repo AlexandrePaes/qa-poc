@@ -1,0 +1,33 @@
+<!-- faq/templates/faq/faq_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>FAQ List</h2>
+
+  {% for faq in faqs %}
+    <div>
+      <h3>{{ faq.question }}</h3>
+      <p>{{ faq.answer }}</p>
+      <a href="{% url 'faq_detail' faq.id %}">Read more</a>
+    </div>
+  {% endfor %}
+
+  <div class="pagination">
+    <span class="step-links">
+        {% if faqs.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ faqs.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ faqs.number }} of {{ faqs.paginator.num_pages }}.
+        </span>
+
+        {% if faqs.has_next %}
+            <a href="?page={{ faqs.next_page_number }}">next</a>
+            <a href="?page={{ faqs.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+  <a href="{% url 'faq_create' %}">Back to FAQ Create</a>
+{% endblock %}

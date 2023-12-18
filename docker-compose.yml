@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  web:
+    container_name: web
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_HOST=localhost
+      - PG_PORT=5432
+    depends_on:
+      - qadb
+
+  qadb:
+    container_name: qadb
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
