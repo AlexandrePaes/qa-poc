@@ -5,4 +5,4 @@ class FAQ(models.Model):
     answer = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.question
+        return f'{self.question} {self.answer}'
