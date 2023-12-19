@@ -28,8 +28,37 @@ def faq_detail(request, faq_id):
 #         return self.paginator.validate_number(self.number + 1)
 
 
-# V3
+# V4
 
+# @api_view(['GET', 'POST'])
+# def faq_create(request):
+#     faq_list = FAQ.objects.all().order_by('id')
+
+#     # Get the current page number
+#     page_number = request.GET.get('page', 1)
+
+#     paginator = Paginator(faq_list, 1)  # 1 item per page
+#     page_obj = paginator.get_page(page_number)
+
+#     if request.method == 'POST':
+#         form = FAQForm(request.POST or None)
+
+#         if form.is_valid():
+#             # Save the answer for the current question
+#             faq = get_object_or_404(FAQ, pk=page_obj.object_list[0].pk)
+#             faq.save()
+
+#             # Redirect to the next question page
+#             next_page_number = page_number + 1
+#             if next_page_number <= paginator.num_pages:
+#                 return redirect(f'/faq/create/?page={next_page_number}')
+
+#     form = FAQForm()
+#     return render(request, 'faq/faq_create.html', {'form': form, 'page_obj': page_obj})
+
+########################################################################################
+
+# V3
 
 @api_view(['GET', 'POST'])
 def faq_create(request):
@@ -41,7 +70,7 @@ def faq_create(request):
     print('paginator Type:', type(paginator))
     print('paginator:', paginator)
 
-    page_number = request.GET.get('page', faq_page.values)
+    page_number = request.GET.get('page', 1)
     print('page_number Type:', type(page_number))
     print('page_number:', page_number)
 
@@ -60,15 +89,21 @@ def faq_create(request):
         if form.is_valid():
             # Get the FAQ for the current page and update the answer
             faq = get_object_or_404(FAQ, pk=page_obj.object_list)
-            
+            faq.save()
             faq.answer = form.data['answer']
             faq.save()
-
                 # Redirect to the next question or FAQ            
             if page_obj.has_next():
-                return redirect(f'/faq/create/?page={page_obj.next_page_number}')
-            return redirect(f'/faq/create/?page={page_obj.next_page_number}')
-    form = FAQForm({'question': page_number})
+                # return redirect(f'faq/create/{page_number}')                
+                # return redirect(f'/faq/create/?page={faq_page[0::]}')
+                next_page_number = page_number + 1
+                next_page_number = int(next_page_number)
+                print('next_page_number 2:', next_page_number)
+                if next_page_number <= paginator.num_pages:
+                    # return redirect(f'/faq/create/?page={next_page_number}/{paginator.page(int(page_number))}')
+                    return redirect(f'/faq/create/?page={next_page_number}')
+            
+    form = FAQForm({'question': 'answer'})
     return render(request, 'faq/faq_create.html', {'form': form, 'page_obj': page_obj})
 
 ########################################################################################
